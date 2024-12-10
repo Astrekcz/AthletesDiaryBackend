@@ -1,0 +1,62 @@
+[
+  {
+    "comment": "Good training",
+    "dateOfTrain": "01.01.2024",
+    "days": "monday",
+    "nameOfTraining": "Running practice"
+  },
+  {
+    "comment": "Focused on strength",
+    "dateOfTrain": "02.01.2024",
+    "days": "tuesday",
+    "nameOfTraining": "Weightlifting"
+  },
+  {
+    "comment": "Cardio and endurance",
+    "dateOfTrain": "03.01.2024",
+    "days": "wednesday",
+    "nameOfTraining": "Interval running"
+  },
+  {
+    "comment": "Great progress",
+    "dateOfTrain": "04.01.2024",
+    "days": "thursday",
+    "nameOfTraining": "Strength training"
+  },
+  {
+    "comment": "Focused on flexibility",
+    "dateOfTrain": "05.01.2024",
+    "days": "friday",
+    "nameOfTraining": "Yoga session"
+  },
+  {
+    "comment": "Good training",
+    "dateOfTrain": "08.01.2024",
+    "days": "monday",
+    "nameOfTraining": "Tempo run"
+  },
+  {
+    "comment": "Endurance focused",
+    "dateOfTrain": "09.01.2024",
+    "days": "tuesday",
+    "nameOfTraining": "Cycling workout"
+  },
+  {
+    "comment": "Strength and stamina",
+    "dateOfTrain": "10.01.2024",
+    "days": "wednesday",
+    "nameOfTraining": "Core workout"
+  },
+  {
+    "comment": "Pushing limits",
+    "dateOfTrain": "11.01.2024",
+    "days": "thursday",
+    "nameOfTraining": "High-intensity intervals"
+  },
+  {
+    "comment": "Relaxed yet effective",
+    "dateOfTrain": "12.01.2024",
+    "days": "friday",
+    "nameOfTraining": "Stretching and recovery"
+  }
+]
