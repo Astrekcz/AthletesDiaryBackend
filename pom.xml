@@ -28,6 +28,7 @@
     </scm>
     <properties>
         <java.version>17</java.version>
+        <start-class>com.example.demo1.util.AthletesDiaryApplication</start-class>
     </properties>
     <dependencies>
         <dependency>
