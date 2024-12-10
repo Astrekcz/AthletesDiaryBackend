@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+import com.example.demo.dto.DurationInputDto;
 import com.example.demo.dto.TrainingDto;
 import com.example.demo.dto.TrainingForUser;
 import com.example.demo.entity.*;
@@ -20,9 +21,12 @@ public class TrainingMapper {
                 .build();
     return trainingDto;
     }
-    public TrainingForUser TrainingForUserDto(Training training) {
+    public TrainingForUser TrainingForUserDto(Training training, DurationInput durationInput) {
         WarmUp warmUp = training.getWarmUp();
         Runs runs = training.getRuns();
+
+
+
 
         TrainingForUser trainingForUser = TrainingForUser.builder()
                 .trainingID(training.getTrainingID())
@@ -36,7 +40,7 @@ public class TrainingMapper {
                 .dateOfTrain(training.getDateOfTrain())
                 .nameOfTraining(training.getNameOfTraining())
                 .comment(training.getComment())
-                .durationOfRun(runs.getDurationOfRun())
+                .durationOfRun((durationInput.getDurationOfRun()))
                 .pause(runs.getPause())
                 .repetition(runs.getRepetition())
                 .build();
@@ -44,7 +48,7 @@ public class TrainingMapper {
 
         return trainingForUser;
     }
-    public TrainingForUser trainingForCoachDto(Training training) {
+    public TrainingForUser trainingForCoachDto(Training training, DurationInput durationInput) {
 
         WarmUp warmUp = training.getWarmUp();
         Runs runs = training.getRuns();
@@ -61,7 +65,7 @@ public class TrainingMapper {
                 .dateOfTrain(training.getDateOfTrain())
                 .nameOfTraining(training.getNameOfTraining())
                 .comment(training.getComment())
-                .durationOfRun(runs.getDurationOfRun())
+                .durationOfRun(durationInput.getDurationOfRun())
                 .pause(runs.getPause())
                 .repetition(runs.getRepetition())
                 .days(training.getDays())
@@ -70,7 +74,7 @@ public class TrainingMapper {
         return trainingForUser;
 
     }
-    public TrainingForUser trainingForAdmin(Training training){
+    public TrainingForUser trainingForAdmin(Training training, DurationInput durationInput){
 
         WarmUp warmUp = training.getWarmUp();
         Runs runs = training.getRuns();
@@ -87,7 +91,7 @@ public class TrainingMapper {
                 .dateOfTrain(training.getDateOfTrain())
                 .nameOfTraining(training.getNameOfTraining())
                 .comment(training.getComment())
-                .durationOfRun(runs.getDurationOfRun())
+                .durationOfRun(durationInput.getDurationOfRun())
                 .pause(runs.getPause())
                 .repetition(runs.getRepetition())
                 .days(training.getDays())

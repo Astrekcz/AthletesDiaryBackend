@@ -28,4 +28,5 @@ public class Week {
 
     //TODO vymyslet logiku na přiřazení trénink(jednotlivých dnů) do week class
 
+
 }

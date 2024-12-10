@@ -31,9 +31,11 @@ public class TrainingForUser {
     //Runs
     private Long runsId;
 
-    private Duration durationOfRun;
+    private Long durationOfRun;
 
-    private Duration pause;
+    private String unit;
+
+    private Long pause;
 
     private Integer repetition;
 

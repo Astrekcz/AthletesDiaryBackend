@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-
 import com.example.demo.repository.*;
 import com.example.demo.entity.*;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -38,7 +34,7 @@ public class TrainingService {
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    public Duration saveTime(DurationInput durationInput) {
+    public Duration ConvertToDuration(DurationInput durationInput) {
         return switch (durationInput.getUnit().toLowerCase()){
             case "seconds" -> Duration.ofSeconds(durationInput.getDurationOfRun());
             case "minutes" -> Duration.ofMinutes(durationInput.getDurationOfRun());
@@ -49,46 +45,47 @@ public class TrainingService {
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    public void ConvertTimeToSeconds(DurationInput durationInput) {
-        if (durationInput.getUnit().equals("minutes")) {
-            durationInput.setDurationOfRun(durationInput.getDurationOfRun()*60);
-        }else if (durationInput.getUnit().equals("hours")) {
-            durationInput.setDurationOfRun(durationInput.getDurationOfRun()*60*60);
-        }else if (durationInput.getUnit().equals("seconds")) {
-            durationInput.setDurationOfRun(durationInput.getDurationOfRun());
-        }else throw new IllegalArgumentException("Invalid unit value");
-    }
-/*
-    @PreAuthorize("hasRole('USER')")
-    @Transactional
-    public Duration saveTimeToSeconds(Runs input){
-        return switch (input.getUnit().toLowerCase()) {
-            case "seconds" -> Duration.ofSeconds(input.getDurationOfRun());
-            case "minutes" -> Duration.ofMinutes(input.getDurationOfRun());
-            case "hours" -> Duration.ofHours(input.getDurationOfRun());
-            default -> throw new IllegalArgumentException("Invalid unit type" + input.getUnit());
+    public Long ConvertTimeToSeconds(DurationInput durationInput) {// time will be saved to database in seconds
+        return switch (durationInput.getUnit().toLowerCase()) {
+            case "seconds" -> Duration.ofSeconds(durationInput.getDurationOfRun()).toSeconds();
+            case "minutes" -> Duration.ofMinutes(durationInput.getDurationOfRun()).toSeconds();
+            case "hours" -> Duration.ofHours(durationInput.getDurationOfRun()).toSeconds();
+            default -> throw new IllegalArgumentException("Invalid unit value");
         };
     }
 
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    public Duration convertToDuration(Runs input){
-        return switch (input.getUnit().toLowerCase()) {
-            case "seconds" -> Duration.ofSeconds(input.getDurationOfRun());
-            case "minutes" -> Duration.ofMinutes(input.getDurationOfRun());
-            case "hours" -> Duration.ofHours(input.getDurationOfRun());
-            default -> throw new IllegalArgumentException("Invalid unit type" + input.getUnit());
-        };
-    } */
+    public Long RetrieveTimeFromDto(DurationInput durationInput){
+        return switch (durationInput.getUnit().toLowerCase()) {
+            case "seconds" -> Duration.ofSeconds(durationInput.getDurationOfRun()).toSeconds();
+            case "minutes" -> Duration.ofMinutes(durationInput.getDurationOfRun()).toMinutes();
+            case "hours" -> Duration.ofHours(durationInput.getDurationOfRun()).toHours();
+            default -> throw new IllegalArgumentException("Invalid unit value");
 
+
+        };
+    }
+
+    /*
+    Takže jako první se vyvolá ConvertTimeToSeconds, vteřiny se uloži do database kde pak v rámci potřeby si vyzvedne one vteřiny metoda
+    RetrieveTimeFromDto která je sice konvertuje v Long hodnotě na h, min, sec. Dále je controleri kovertuje do duration ConvertToDuration.
+*/
     @PreAuthorize("hasRole('USER')")
     @Transactional
     public void saveTraining(String comment, String nameOfTraining,
-                              String distance, String exercises,
-                              String trot, LocalDate dateOfTrain, Long trainingID,
-                               Long pause, String Unit, Long DurationOfRun,
-                              Integer repetition, Integer numberOfRuns){
+                             String distance, String exercises,
+                             String trot, LocalDate dateOfTrain, Long trainingID,
+                             Long pause, String Unit, Long DurationOfRun,
+                             Integer repetition, Integer numberOfRuns){
+
+        DurationInput durationInput2 = new DurationInput();
+
+        Long ConvertedTime = ConvertTimeToSeconds(durationInput2);
+
+        durationInput2.setDurationOfRun(ConvertedTime);
+
         if (DurationOfRun < 0 || DurationOfRun == 0){
             throw new IllegalArgumentException("durationOfRun is invalid");
         }else if (pause < 0 ){
@@ -133,9 +130,6 @@ public class TrainingService {
                 .Unit(Unit)
                 .build();
 
-
-
-
         //Setting relation between databases
         warmUp.setTraining(training);
         distances.setRuns(runs);
@@ -154,6 +148,4 @@ public class TrainingService {
     public List<Training> getTrainingList(){
         return trainingRepository.findAll();
     }
-
-
 }
