@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -19,7 +20,12 @@ public class Week {
 
     private Integer weekNumber;
 
+    private Integer numberOfTrainings;
+
     private LocalDate startOfWeek;
+
+    @OneToMany(mappedBy = "training", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Training> trainingList;
 
     private LocalDate endOfWeek;
 
@@ -27,6 +33,10 @@ public class Week {
     private Days days;
 
     //TODO vymyslet logiku na přiřazení trénink(jednotlivých dnů) do week class
+
+    public void adjustNumberOfTrainings() {
+        this.numberOfTrainings = trainingList.size();
+    }
 
 
 }

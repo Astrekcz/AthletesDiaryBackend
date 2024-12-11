@@ -149,4 +149,36 @@ public class TrainingService {
     public List<Training> getTrainingList(){
         return trainingRepository.findAll();
     }
+
+    @PreAuthorize("hasRole('USER')")
+    public void deleteTrainingAsUser(Long trainingID){
+        Training training = trainingRepository.findById(trainingID)
+                .orElseThrow(() -> new RuntimeException("training record not found"));
+
+        // Retrieve the authentication object from the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new RuntimeException("Authentication object is null");
+        }
+
+        // Extract user details from the authentication object
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername(); // this is email address
+
+        // Log username for debugging purposes
+        log.debug("Username: {}", username);
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Check if the review belongs to the logged-in user
+        if (!training.getUser().getUserId().equals(user.getUserId())) {
+            throw new RuntimeException("You can only delete your own reviews");
+        }
+        trainingRepository.delete(training);
+    }
+
+    public void editTrainingAsUser(Long trainingID, Training training){
+
+    }
 }
