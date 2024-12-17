@@ -178,7 +178,70 @@ public class TrainingService {
         trainingRepository.delete(training);
     }
 
-    public void editTrainingAsUser(Long trainingID, Training training){
+
+    @PreAuthorize("hasRole('USER')")
+    public void editTrainingAsUser(String comment, String nameOfTraining,
+                                   String distance, String exercises,
+                                   String trot, LocalDate dateOfTrain, Long trainingID,
+                                   Long pause, String Unit, Long DurationOfRun,
+                                   Integer repetition, Integer numberOfRuns){
+
+        Training training = trainingRepository.findById(trainingID)
+                .orElseThrow(() -> new RuntimeException("training record not found"));
+
+        Distance distance1 = distanceRepository.findById(trainingID)
+                .orElseThrow(() -> new RuntimeException("distance record not found"));
+
+        DurationInput durationInput = durationInputRepository.findById(trainingID)
+                .orElseThrow(() -> new RuntimeException("duration record not found"));
+
+        Runs runs = runsRepository.findById(trainingID)
+                .orElseThrow(() -> new RuntimeException("runs record not found"));
+
+        WarmUp warmUp = warmUpRepository.findById(trainingID)
+                .orElseThrow(() -> new RuntimeException("warmUp record not found"));
+
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new RuntimeException("Authentication object is null");
+        }
+        // Extract user details from the authentication object
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername(); // this is email address
+
+        // Log username for debugging purposes
+        log.debug("Username: {}", username);
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        // Check if the review belongs to the logged-in user
+        if (!training.getUser().getUserId().equals(user.getUserId())) {
+            throw new RuntimeException("You can only edit your own reviews");
+        }
+
+        training.setComment(comment);
+        training.setNameOfTraining(nameOfTraining);
+
+        runs.setNumberOfRuns(numberOfRuns);
+        runs.setPause(pause);
+        runs.setRepetition(repetition);
+
+        distance1.setDistance(distance);
+
+        warmUp.setExercises(exercises);
+        warmUp.setTrot(trot);
+
+        durationInput.setDurationOfRun(DurationOfRun);
+        durationInput.setUnit(Unit);
+
+        trainingRepository.save(training);
+        warmUpRepository.save(warmUp);
+        runsRepository.save(runs);
+        distanceRepository.save(distance1);
+        durationInputRepository.save(durationInput);
 
     }
 }

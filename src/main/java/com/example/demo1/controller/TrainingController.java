@@ -64,8 +64,21 @@ public class TrainingController {
         }
     }
 
+
+    @PreAuthorize("hasRole('USER')")
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/editTraining")
+    public ResponseEntity<String> editTrainingAsUser(@Valid @RequestBody TrainingDto trainingDto, @RequestParam Long trainingID, @Valid @RequestBody DistanceDto distanceDto,
+                                               @Valid @RequestBody WarmUpDto warmUpDto, @Valid @RequestBody RunsDto runsDto, @Valid @RequestBody DurationInputDto durationInputDto) {
+
+        try {
+            trainingService.editTrainingAsUser(trainingDto.getComment(), trainingDto.getNameOfTraining(), distanceDto.getDistance(), warmUpDto.getExercises(), warmUpDto.getTrot(),
+                    trainingDto.getDateOfTrain(), trainingID, runsDto.getPause(), durationInputDto.getUnit(), durationInputDto.getDurationOfRun(), runsDto.getRepetition(),
+                    runsDto.getNumberOfRuns());
+            return new ResponseEntity<>("training was updated", HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
  // TODO udelat save delete metody v servisu a v controleru pridat adjustnumberoftrainings, udelat week service,
-
-
-
 }
