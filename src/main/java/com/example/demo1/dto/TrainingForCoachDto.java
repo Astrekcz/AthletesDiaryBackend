@@ -31,9 +31,9 @@ public class TrainingForCoachDto {
     //Runs
     private Long runsId;
 
-    private Duration durationOfRun;
+    private Long durationOfRun;
 
-    private Duration pause;
+    private Long pause;
 
     private Integer repetition;
 

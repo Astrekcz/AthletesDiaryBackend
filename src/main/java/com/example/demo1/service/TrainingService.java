@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,14 +31,13 @@ public class TrainingService {
     private final DistanceRepository distanceRepository;
     private final RunsRepository runsRepository;
     private final DurationInputRepository durationInputRepository;
-
-
+    private final WeekRepository weekRepository;
 
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
     public Duration ConvertToDuration(DurationInput durationInput) {
-        return switch (durationInput.getUnit().toLowerCase()){
+        return switch (durationInput.getUnit().toLowerCase()) {
             case "seconds" -> Duration.ofSeconds(durationInput.getDurationOfRun());
             case "minutes" -> Duration.ofMinutes(durationInput.getDurationOfRun());
             case "hours" -> Duration.ofHours(durationInput.getDurationOfRun());
@@ -58,7 +59,7 @@ public class TrainingService {
 
     @PreAuthorize("hasRole('USER')")
     @Transactional
-    public Long RetrieveTimeFromDto(DurationInput durationInput){
+    public Long RetrieveTimeFromDto(DurationInput durationInput) {
         return switch (durationInput.getUnit().toLowerCase()) {
             case "seconds" -> Duration.ofSeconds(durationInput.getDurationOfRun()).toSeconds();
             case "minutes" -> Duration.ofMinutes(durationInput.getDurationOfRun()).toMinutes();
@@ -79,7 +80,7 @@ public class TrainingService {
                              String distance, String exercises,
                              String trot, LocalDate dateOfTrain, Long trainingID,
                              Long pause, String Unit, Long DurationOfRun,
-                             Integer repetition, Integer numberOfRuns){
+                             Integer repetition, Integer numberOfRuns) {
 
         DurationInput durationInput2 = new DurationInput();
 
@@ -87,9 +88,9 @@ public class TrainingService {
 
         durationInput2.setDurationOfRun(ConvertedTime);
 
-        if (DurationOfRun < 0 || DurationOfRun == 0){
+        if (DurationOfRun < 0 || DurationOfRun == 0) {
             throw new IllegalArgumentException("durationOfRun is invalid");
-        }else if (pause < 0 ){
+        } else if (pause < 0) {
             throw new IllegalArgumentException("pause is invalid");
         }
 
@@ -146,12 +147,13 @@ public class TrainingService {
 
 
     }
-    public List<Training> getTrainingList(){
+
+    public List<Training> getTrainingList() {
         return trainingRepository.findAll();
     }
 
     @PreAuthorize("hasRole('USER')")
-    public void deleteTrainingAsUser(Long trainingID){
+    public void deleteTrainingAsUser(Long trainingID) {
         Training training = trainingRepository.findById(trainingID)
                 .orElseThrow(() -> new RuntimeException("training record not found"));
 
@@ -184,7 +186,7 @@ public class TrainingService {
                                    String distance, String exercises,
                                    String trot, LocalDate dateOfTrain, Long trainingID,
                                    Long pause, String Unit, Long DurationOfRun,
-                                   Integer repetition, Integer numberOfRuns){
+                                   Integer repetition, Integer numberOfRuns) {
 
         Training training = trainingRepository.findById(trainingID)
                 .orElseThrow(() -> new RuntimeException("training record not found"));
@@ -244,4 +246,54 @@ public class TrainingService {
         durationInputRepository.save(durationInput);
 
     }
+
+    public List<Training> getTrainingListByWeek(Long weekID) {
+        Week week = weekRepository.findById(weekID)
+                .orElseThrow(() -> new RuntimeException("week record not found"));
+        List<Training> trainingListByWeek = week.getTrainingList();
+        return trainingListByWeek;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Training> getAllTrainings(){
+        return trainingRepository.findAll();
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    public Training getTrainingById(Long trainingId) {
+        Training training = trainingRepository.findById(trainingId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        // Retrieve the username from the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // this is email address
+
+        // Load user details
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Training> userTrainings = user.getTrainingList();
+        for (Training userTraining : userTrainings) {
+            if (userTraining.getTrainingID().equals(trainingId)) {
+                return training;
+            }
+        }
+        throw new RuntimeException("User does not have reviews with specific Id");
+    }
+
+
+    // Vrátí mapu tréninků podle dnů
+    public Map<Days, List<Training>> getTrainingScheduleForUser(Long userId) {
+        Map<Days, List<Training>> trainingSchedule = new EnumMap<>(Days.class);
+
+        // Pro každý den v týdnu načte tréninky z databáze
+        for (Days day : Days.values()) {
+            List<Training> trainings = trainingRepository.findByUserIdAndDays(userId, day);
+            trainingSchedule.put(day, trainings);
+        }
+
+        return trainingSchedule;
+    }
+
 }

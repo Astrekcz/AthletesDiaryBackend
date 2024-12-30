@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Builder
 @Getter
 @Setter
-public class TrainingForAdmin {
+public class  TrainingForAdminDto {
     private Long trainingID;
 
     private Long warmUpID;
@@ -32,9 +32,9 @@ public class TrainingForAdmin {
     //Runs
     private Long runsId;
 
-    private Duration durationOfRun;
+    private Long durationOfRun;
 
-    private Duration pause;
+    private Long pause;
 
     private Integer repetition;
 

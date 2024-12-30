@@ -1,12 +1,16 @@
 package com.example.demo1.mapper;
 
+import com.example.demo1.dto.TrainingForAdminDto;
+import com.example.demo1.dto.TrainingForCoachDto;
 import com.example.demo1.entity.DurationInput;
 import com.example.demo1.entity.Runs;
 import com.example.demo1.entity.Training;
 import com.example.demo1.dto.TrainingDto;
-import com.example.demo1.dto.TrainingForUser;
-
+import com.example.demo1.dto.TrainingForUserDto;
 import com.example.demo1.entity.WarmUp;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,14 +26,12 @@ public class TrainingMapper {
                 .build();
     return trainingDto;
     }
-    public TrainingForUser TrainingForUserDto(Training training, DurationInput durationInput) {
+    public TrainingForUserDto trainingForUserDto(Training training) {
         WarmUp warmUp = training.getWarmUp();
         Runs runs = training.getRuns();
+        DurationInput durationInput = new DurationInput();
 
-
-
-
-        TrainingForUser trainingForUser = TrainingForUser.builder()
+        TrainingForUserDto trainingForUserDto = TrainingForUserDto.builder()
                 .trainingID(training.getTrainingID())
                 .runsId(runs.getRunsId())
                 .warmUpID(warmUp.getWarmUpID())
@@ -47,14 +49,15 @@ public class TrainingMapper {
                 .build();
 
 
-        return trainingForUser;
+        return trainingForUserDto;
     }
-    public TrainingForUser trainingForCoachDto(Training training, DurationInput durationInput) {
+    public TrainingForCoachDto trainingForCoachDto(Training training) {
 
         WarmUp warmUp = training.getWarmUp();
         Runs runs = training.getRuns();
+        DurationInput durationInput = new DurationInput();
 
-        TrainingForUser trainingForUser = TrainingForUser.builder()
+        TrainingForCoachDto trainingForUserDto = TrainingForCoachDto.builder()
                 .trainingID(training.getTrainingID())
                 .runsId(runs.getRunsId())
                 .warmUpID(warmUp.getWarmUpID())
@@ -72,15 +75,17 @@ public class TrainingMapper {
                 .days(training.getDays())
                 .build();
 
-        return trainingForUser;
+        return trainingForUserDto;
 
     }
-    public TrainingForUser trainingForAdmin(Training training, DurationInput durationInput){
+    public TrainingForAdminDto trainingForAdmin(Training training){
 
         WarmUp warmUp = training.getWarmUp();
         Runs runs = training.getRuns();
+        DurationInput durationInput = new DurationInput();
 
-        TrainingForUser trainingForUser = TrainingForUser.builder()
+
+        TrainingForAdminDto trainingForAdminDto = TrainingForAdminDto.builder()
                 .trainingID(training.getTrainingID())
                 .runsId(runs.getRunsId())
                 .warmUpID(warmUp.getWarmUpID())
@@ -98,7 +103,7 @@ public class TrainingMapper {
                 .days(training.getDays())
                 .build();
 
-        return trainingForUser;
+        return trainingForAdminDto;
 
         //budou jenom 1 training mapper ktery bude mapovat jenom zakladni data o treninku.
         //ostatni tridy warmUp atd se udelali jednotlive mappery

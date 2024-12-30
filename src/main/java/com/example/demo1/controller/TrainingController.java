@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.*;
+import com.example.demo1.entity.Days;
 import com.example.demo1.service.TrainingService;
 import com.example.demo1.entity.Training;
 import com.example.demo1.mapper.TrainingMapper;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -80,5 +82,58 @@ public class TrainingController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
- // TODO udelat save delete metody v servisu a v controleru pridat adjustnumberoftrainings, udelat week service,
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/getAllTrainingsAsAdmin")
+    public ResponseEntity<?> getAllTrainingsAsAdmin() {
+        try{
+            List<Training> trainingListForAdmin = trainingService.getTrainingList();
+            List<TrainingForAdminDto> trainingForAdminDtoList = new ArrayList<>();
+            for (Training training : trainingListForAdmin) {
+                trainingForAdminDtoList.add(trainingMapper.trainingForAdmin(training));
+            }
+            return new ResponseEntity<>(trainingForAdminDtoList, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PreAuthorize("hasRole('Coach')")
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/getAllTrainingsAsCoach")
+    public ResponseEntity<?> getAllTrainingsAsCoach() {
+        try{
+            List<Training> trainingListForCoach = trainingService.getTrainingList();
+            List<TrainingForCoachDto> trainingForCoachDtoList = new ArrayList<>();
+            for (Training training : trainingListForCoach) {
+                trainingForCoachDtoList.add(trainingMapper.trainingForCoachDto(training));
+            }
+            return new ResponseEntity<>(trainingForCoachDtoList, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/getTrainingById")
+    public ResponseEntity<?> getTrainingById(@RequestParam Long trainingId) {
+        try {
+            Training training = trainingService.getTrainingById(trainingId);
+            TrainingForUserDto trainingForUserDto = trainingMapper.trainingForUserDto(training);
+            return new ResponseEntity<>(trainingForUserDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Endpoint pro získání tréninkového kalendáře
+    @GetMapping("/getUserCalendar")
+    @CrossOrigin(origins = "http://localhost:3000")
+    public Map<Days, List<Training>> getTrainingSchedule(@PathVariable Long userId) {
+        return trainingService.getTrainingScheduleForUser(userId);
+    }
 }
+// TODO udelat save delete metody v servisu a v controleru pridat adjustnumberoftrainings, udelat week service,
+
