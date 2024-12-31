@@ -25,7 +25,7 @@ public class TrainingController {
     private final TrainingService trainingService;
     private final TrainingMapper trainingMapper;
 
-    @CrossOrigin(origins = "http://localhost:300")
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getTrainingsDto")
     public ResponseEntity<List<TrainingDto>> getTrainingsDto() {
         List<TrainingDto> trainingDtoList = new ArrayList<>();
@@ -36,7 +36,7 @@ public class TrainingController {
         return new ResponseEntity<>(trainingDtoList, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole(T(com.example.demo1.entity.Role).USER)")
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/saveTraining")
     public ResponseEntity<String> saveTraining(@Valid @RequestBody TrainingDto trainingDto, @RequestParam Long trainingID, @Valid @RequestBody DistanceDto distanceDto,
@@ -54,7 +54,7 @@ public class TrainingController {
 
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole(T(com.example.demo1.entity.Role).USER)")
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/deleteTraining")
     public ResponseEntity<String> deleteTraining(@RequestParam Long trainingID) {
@@ -67,7 +67,7 @@ public class TrainingController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole(T(com.example.demo1.entity.Role).USER)")
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/editTraining")
     public ResponseEntity<String> editTrainingAsUser(@Valid @RequestBody TrainingDto trainingDto, @RequestParam Long trainingID, @Valid @RequestBody DistanceDto distanceDto,
@@ -83,7 +83,7 @@ public class TrainingController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole(T(com.example.demo1.entity.Role).ADMIN)")
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getAllTrainingsAsAdmin")
     public ResponseEntity<?> getAllTrainingsAsAdmin() {
@@ -99,7 +99,7 @@ public class TrainingController {
         }
     }
 
-    @PreAuthorize("hasRole('Coach')")
+    @PreAuthorize("hasRole(T(com.example.demo1.entity.Role).COACH)")
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getAllTrainingsAsCoach")
     public ResponseEntity<?> getAllTrainingsAsCoach() {
@@ -115,7 +115,7 @@ public class TrainingController {
         }
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole(T(com.example.demo1.entity.Role).USER)")
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getTrainingById")
     public ResponseEntity<?> getTrainingById(@RequestParam Long trainingId) {
