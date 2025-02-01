@@ -24,7 +24,7 @@ public class Week {
 
     private LocalDate startOfWeek;
 
-    @OneToMany(mappedBy = "training", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trainingID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Training> trainingList;
 
     private LocalDate endOfWeek;
@@ -34,9 +34,9 @@ public class Week {
 
     //TODO vymyslet logiku na přiřazení trénink(jednotlivých dnů) do week class
 
-    public void adjustNumberOfTrainings() {
+   /* public void adjustNumberOfTrainings() {
         this.numberOfTrainings = trainingList.size();
-    }
+    }*/
 
 
 }

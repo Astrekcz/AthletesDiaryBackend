@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface DistanceRepository extends JpaRepository<Distance, Long> {
-    List<Distance> findAllByUser_Id(Long userId);
+    List<Distance> findAllByRuns_RunsId(Long runsId);
 }

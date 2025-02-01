@@ -289,7 +289,7 @@ public class TrainingService {
 
         // Pro každý den v týdnu načte tréninky z databáze
         for (Days day : Days.values()) {
-            List<Training> trainings = trainingRepository.findByUserIdAndDays(userId, day);
+            List<Training> trainings = trainingRepository.findByUserUserIdAndDays(userId, day);
             trainingSchedule.put(day, trainings);
         }
 

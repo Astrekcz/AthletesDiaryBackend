@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface WeekRepository extends JpaRepository<Week, Long> {
-    Optional<Week> findWeekById(Integer WMid);
+    Optional<Week> findWeekByWMid(Integer WMid);
 
 
 

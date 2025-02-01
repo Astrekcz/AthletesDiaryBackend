@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface RunsRepository extends JpaRepository<Runs, Long> {
-    List<Runs> findByUserId(Long userId);
+    List<Runs> findByTraining_TrainingID(Long trainingID);
 }

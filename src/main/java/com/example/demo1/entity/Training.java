@@ -24,6 +24,11 @@ public class Training {
     @JoinColumn(name = "userId")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "WMid")
+    private Week week;
+
+
     @Enumerated(EnumType.STRING)
     private Days days;
 

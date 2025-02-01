@@ -29,7 +29,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trainingID", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Training> trainingList;
 
 

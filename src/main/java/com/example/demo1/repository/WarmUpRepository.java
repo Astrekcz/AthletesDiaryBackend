@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface WarmUpRepository extends JpaRepository<WarmUp, Long> {
-    List<WarmUp> findAllByUser_Id(Long userId);
+    List<WarmUp> findAllByTraining_TrainingID(Long trainingID);
 }
