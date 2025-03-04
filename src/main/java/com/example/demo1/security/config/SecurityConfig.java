@@ -24,15 +24,23 @@ public class SecurityConfig {
     private final JwtRequestFilter jwtRequestFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, HttpSecurity httpSecurity) throws Exception {
         http
-
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/**").permitAll()
-                        .requestMatchers("/api/training/**").permitAll()
-
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/logout").permitAll()
+                        .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/registerAsAdmin").permitAll()
+                        .requestMatchers("/api/user/delete").permitAll()
+                        .requestMatchers("/api/user/deleteUserAsAdmin").permitAll()
+                        .requestMatchers("/api/user/update").permitAll()
+                        .requestMatchers("/api/user/updateUserAsAdmin").permitAll()
+                        .requestMatchers("/api/user/updatePassword").permitAll()
+                        .requestMatchers("/api/user/updatePasswordAsAdmin").permitAll()
+                        .anyRequest().authenticated()
+                )
                // .httpBasic(Customizer.withDefaults())
                // .formLogin(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
